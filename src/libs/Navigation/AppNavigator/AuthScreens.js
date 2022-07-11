@@ -40,6 +40,12 @@ import LogOutPreviousUserPage from '../../../pages/LogOutPreviousUserPage';
 import networkPropTypes from '../../../components/networkPropTypes';
 import {withNetwork} from '../../../components/OnyxProvider';
 
+let currentUserEmail = '';
+Onyx.connect({
+    key: ONYXKEYS.SESSION,
+    callback: val => currentUserEmail = val ? val.email : '',
+});
+
 Onyx.connect({
     key: ONYXKEYS.PERSONAL_DETAILS,
     callback: (val) => {
@@ -47,7 +53,7 @@ Onyx.connect({
             return;
         }
 
-        const currentUser = _.findWhere(val, {isCurrentUser: true});
+        const currentUser = val[currentUserEmail];
         const timezone = lodashGet(currentUser, 'timezone', {});
         const currentTimezone = moment.tz.guess(true);
 
