@@ -85,7 +85,9 @@ const defaultProps = {
     reports: {},
     reportsWithDraft: {},
     personalDetails: {},
-    currentUserPersonalDetails: {},
+    currentUserPersonalDetails: {
+        avatar: ReportUtils.getDefaultAvatar(),
+    },
     currentlyViewedReportID: '',
     priorityMode: CONST.PRIORITY_MODE.DEFAULT,
     initialReportDataLoaded: false,
@@ -164,11 +166,6 @@ class SidebarLinks extends React.Component {
 
     constructor(props) {
         super(props);
-
-        // Get my details from the list of personal details and set default avatar if not already set
-        if (!_.has(this.props.currentUserPersonalDetails, 'avatar') || _.isEmpty(this.props.currentUserPersonalDetails.avatar)) {
-            this.props.currentUserPersonalDetails.avatar = ReportUtils.getDefaultAvatar();
-        }
 
         this.state = {
             activeReport: {
