@@ -9,16 +9,15 @@ import styles from '../../../styles/styles';
 import themeColors from '../../../styles/themes/default';
 import * as ReportUtils from '../../../libs/ReportUtils';
 import withWindowDimensions, {windowDimensionsPropTypes} from '../../../components/withWindowDimensions';
-import {withPersonalDetails} from '../../../components/OnyxProvider';
+import withPersonalDetails, {personalDetailsPropTypes} from '../../../components/withPersonalDetails';
 import ReportActionItem from './ReportActionItem';
 import variables from '../../../styles/variables';
-import participantPropTypes from '../../../components/participantPropTypes';
 import * as ReportActionsUtils from '../../../libs/ReportActionsUtils';
 import reportActionPropTypes from './reportActionPropTypes';
 
 const propTypes = {
     /** Personal details of all the users */
-    personalDetails: PropTypes.objectOf(participantPropTypes),
+    personalDetails: PropTypes.objectOf(personalDetailsPropTypes),
 
     /** The report currently being looked at */
     report: PropTypes.shape({
@@ -188,5 +187,5 @@ ReportActionsList.defaultProps = defaultProps;
 export default compose(
     withDrawerState,
     withWindowDimensions,
-    withPersonalDetails(),
+    withPersonalDetails,
 )(ReportActionsList);
