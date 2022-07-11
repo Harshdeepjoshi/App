@@ -28,7 +28,7 @@ import AddressSearch from '../../components/AddressSearch';
 import DatePicker from '../../components/DatePicker';
 import FormHelper from '../../libs/FormHelper';
 import walletAdditionalDetailsDraftPropTypes from './walletAdditionalDetailsDraftPropTypes';
-import personalDetailsPropType from '../personalDetailsPropType';
+import withPersonalDetails, {personalDetailsPropTypes} from '../../components/withPersonalDetails';
 import * as PersonalDetails from '../../libs/actions/PersonalDetails';
 
 const propTypes = {
@@ -62,8 +62,8 @@ const propTypes = {
     /** Stores the personal details typed by the user */
     walletAdditionalDetailsDraft: walletAdditionalDetailsDraftPropTypes,
 
-    /** Personal details of all the users, including current user */
-    personalDetails: PropTypes.objectOf(personalDetailsPropType).isRequired,
+    /** Personal details of the current user */
+    currentUserPersonalDetails: personalDetailsPropTypes.isRequired,
 };
 
 const defaultProps = {
@@ -93,7 +93,6 @@ class AdditionalDetailsStep extends React.Component {
         super(props);
 
         this.activateWallet = this.activateWallet.bind(this);
-        this.myPersonalDetails = _.findWhere(props.personalDetails, {isCurrentUser: true});
 
         this.requiredFields = [
             'legalFirstName',
@@ -276,7 +275,7 @@ class AdditionalDetailsStep extends React.Component {
         const isErrorVisible = _.size(this.getErrors()) > 0
             || lodashGet(this.props, 'walletAdditionalDetails.additionalErrorMessage', '').length > 0;
         const shouldAskForFullSSN = this.props.walletAdditionalDetails.shouldAskForFullSSN;
-        const {firstName, lastName} = PersonalDetails.extractFirstAndLastNameFromAvailableDetails(this.myPersonalDetails);
+        const {firstName, lastName} = PersonalDetails.extractFirstAndLastNameFromAvailableDetails(this.props.currentUserPersonalDetails);
 
         return (
             <ScreenWrapper>
@@ -408,13 +407,11 @@ AdditionalDetailsStep.propTypes = propTypes;
 AdditionalDetailsStep.defaultProps = defaultProps;
 export default compose(
     withLocalize,
+    withPersonalDetails,
     withOnyx({
         walletAdditionalDetails: {
             key: ONYXKEYS.WALLET_ADDITIONAL_DETAILS,
             initWithStoredValues: false,
-        },
-        personalDetails: {
-            key: ONYXKEYS.PERSONAL_DETAILS,
         },
     }),
 )(AdditionalDetailsStep);
