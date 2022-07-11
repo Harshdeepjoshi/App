@@ -19,7 +19,7 @@ import Icon from '../components/Icon';
 import CONST from '../CONST';
 import Growl from '../libs/Growl';
 import * as Inbox from '../libs/actions/Inbox';
-import personalDetailsPropType from './personalDetailsPropType';
+import withPersonalDetails, {personalDetailsPropTypes} from '../components/withPersonalDetails';
 import TextInput from '../components/TextInput';
 import Text from '../components/Text';
 import Section from '../components/Section';
@@ -39,8 +39,8 @@ import FormAlertWithSubmitButton from '../components/FormAlertWithSubmitButton';
 const propTypes = {
     ...withLocalizePropTypes,
 
-    /** Personal details of all the users */
-    personalDetails: PropTypes.objectOf(personalDetailsPropType).isRequired,
+    /** Personal details of the current user */
+    currentUserPersonalDetails: personalDetailsPropTypes.isRequired,
 
     /** Login list for the user that is signed in */
     loginList: PropTypes.arrayOf(PropTypes.shape({
@@ -106,8 +106,7 @@ const defaultProps = {
 class RequestCallPage extends Component {
     constructor(props) {
         super(props);
-        const myPersonalDetails = _.findWhere(props.personalDetails, {isCurrentUser: true});
-        const {firstName, lastName} = PersonalDetails.extractFirstAndLastNameFromAvailableDetails(myPersonalDetails);
+        const {firstName, lastName} = PersonalDetails.extractFirstAndLastNameFromAvailableDetails(props.currentUserPersonalDetails);
         this.state = {
             firstName,
             hasFirstNameError: false,
@@ -378,10 +377,8 @@ RequestCallPage.defaultProps = defaultProps;
 export default compose(
     withLocalize,
     withNetwork(),
+    withPersonalDetails,
     withOnyx({
-        personalDetails: {
-            key: ONYXKEYS.PERSONAL_DETAILS,
-        },
         loginList: {
             key: ONYXKEYS.LOGIN_LIST,
         },
