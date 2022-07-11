@@ -35,7 +35,6 @@ import * as ReportUtils from '../../../libs/ReportUtils';
 import ReportActionComposeFocusManager from '../../../libs/ReportActionComposeFocusManager';
 import ParticipantLocalTime from './ParticipantLocalTime';
 import withPersonalDetails from '../../../components/withPersonalDetails';
-import DateUtils from '../../../libs/DateUtils';
 import * as User from '../../../libs/actions/User';
 import Tooltip from '../../../components/Tooltip';
 import EmojiPickerButton from '../../../components/EmojiPicker/EmojiPickerButton';
@@ -383,8 +382,6 @@ class ReportActionCompose extends React.Component {
         if (newComment) {
             this.debouncedBroadcastUserIsTyping();
         }
-
-        this.textInput.scrollTop = this.textInput.scrollHeight;
     }
 
     /**
@@ -436,8 +433,6 @@ class ReportActionCompose extends React.Component {
             return;
         }
 
-        DateUtils.throttledUpdateTimezone();
-
         this.props.onSubmit(trimmedComment);
         this.updateComment('');
         this.setTextInputShouldClear(true);
@@ -486,7 +481,7 @@ class ReportActionCompose extends React.Component {
                         headerTitle={this.props.translate('reportActionCompose.sendAttachment')}
                         onConfirm={(file) => {
                             this.submitForm();
-                            Report.addAction(this.props.reportID, '', file);
+                            Report.addAttachment(this.props.reportID, file);
                             this.setTextInputShouldClear(false);
                         }}
                     >
