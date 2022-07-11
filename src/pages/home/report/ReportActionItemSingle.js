@@ -21,7 +21,7 @@ const propTypes = {
     /** All the data of the action */
     action: PropTypes.shape(reportActionPropTypes).isRequired,
 
-    /** All of the personalDetails, including the current user */
+    /** All of the personalDetails */
     personalDetails: PropTypes.objectOf(personalDetailsPropTypes),
 
     /** Styles for the outermost View */
