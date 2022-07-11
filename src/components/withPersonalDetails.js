@@ -56,6 +56,8 @@ export default function (WrappedComponent) {
 
         /** Personal details of the current user */
         currentUserPersonalDetails: personalDetailsPropTypes,
+
+        /** Session info for the current user */
         session: PropTypes.shape({
             email: PropTypes.string,
         }),

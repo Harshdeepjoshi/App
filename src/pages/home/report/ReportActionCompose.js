@@ -33,9 +33,8 @@ import ROUTES from '../../../ROUTES';
 import reportActionPropTypes from './reportActionPropTypes';
 import * as ReportUtils from '../../../libs/ReportUtils';
 import ReportActionComposeFocusManager from '../../../libs/ReportActionComposeFocusManager';
-import participantPropTypes from '../../../components/participantPropTypes';
 import ParticipantLocalTime from './ParticipantLocalTime';
-import {withPersonalDetails} from '../../../components/OnyxProvider';
+import withPersonalDetails from '../../../components/withPersonalDetails';
 import DateUtils from '../../../libs/DateUtils';
 import * as User from '../../../libs/actions/User';
 import Tooltip from '../../../components/Tooltip';
@@ -64,9 +63,6 @@ const propTypes = {
         /** Indicates if there is a modal currently visible or not */
         isVisible: PropTypes.bool,
     }),
-
-    /** Personal details of all the users */
-    personalDetails: PropTypes.objectOf(participantPropTypes),
 
     /** The report currently being looked at */
     report: PropTypes.shape({
@@ -106,7 +102,6 @@ const defaultProps = {
     report: {},
     reportActions: {},
     blockedFromConcierge: {},
-    personalDetails: {},
 };
 
 class ReportActionCompose extends React.Component {
@@ -128,7 +123,6 @@ class ReportActionCompose extends React.Component {
         this.setTextInputRef = this.setTextInputRef.bind(this);
         this.getInputPlaceholder = this.getInputPlaceholder.bind(this);
         this.getIOUOptions = this.getIOUOptions.bind(this);
-        this.myPersonalDetails = _.findWhere(props.personalDetails, {isCurrentUser: true});
 
         this.state = {
             isFocused: this.shouldFocusInputOnScreenFocus,
@@ -257,7 +251,7 @@ class ReportActionCompose extends React.Component {
      * @returns {Array<object>}
      */
     getIOUOptions(reportParticipants) {
-        const participants = _.filter(reportParticipants, email => this.myPersonalDetails.login !== email);
+        const participants = _.filter(reportParticipants, email => this.props.currentUserPersonalDetails.login !== email);
         const hasExcludedIOUEmails = lodashIntersection(reportParticipants, CONST.EXPENSIFY_EMAILS).length > 0;
         const hasMultipleParticipants = participants.length > 1;
         const iouOptions = [];
@@ -676,7 +670,7 @@ export default compose(
     withDrawerState,
     withNavigationFocus,
     withLocalize,
-    withPersonalDetails(),
+    withPersonalDetails,
     withOnyx({
         betas: {
             key: ONYXKEYS.BETAS,
