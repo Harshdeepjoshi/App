@@ -100,7 +100,6 @@ class IOUModal extends Component {
         this.createTransaction = this.createTransaction.bind(this);
         this.updateComment = this.updateComment.bind(this);
         this.sendMoney = this.sendMoney.bind(this);
-
         const participants = lodashGet(props, 'report.participants', []);
         const participantsWithDetails = _.map(OptionsListUtils.getPersonalDetailsForLogins(participants, props.personalDetails), personalDetails => ({
             login: personalDetails.login,
