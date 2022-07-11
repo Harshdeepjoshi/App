@@ -34,7 +34,7 @@ import reportActionPropTypes from './reportActionPropTypes';
 import * as ReportUtils from '../../../libs/ReportUtils';
 import ReportActionComposeFocusManager from '../../../libs/ReportActionComposeFocusManager';
 import ParticipantLocalTime from './ParticipantLocalTime';
-import withPersonalDetails from '../../../components/withPersonalDetails';
+import withPersonalDetails, {personalDetailsPropTypes} from '../../../components/withPersonalDetails';
 import * as User from '../../../libs/actions/User';
 import Tooltip from '../../../components/Tooltip';
 import EmojiPickerButton from '../../../components/EmojiPicker/EmojiPickerButton';
@@ -62,6 +62,12 @@ const propTypes = {
         /** Indicates if there is a modal currently visible or not */
         isVisible: PropTypes.bool,
     }),
+
+    /** Personal details of all the users, including the current user */
+    personalDetails: PropTypes.objectOf(personalDetailsPropTypes),
+
+    /** Personal details of the current user */
+    currentUserPersonalDetails: personalDetailsPropTypes,
 
     /** The report currently being looked at */
     report: PropTypes.shape({
@@ -101,6 +107,8 @@ const defaultProps = {
     report: {},
     reportActions: {},
     blockedFromConcierge: {},
+    personalDetails: {},
+    currentUserPersonalDetails: {},
 };
 
 class ReportActionCompose extends React.Component {
