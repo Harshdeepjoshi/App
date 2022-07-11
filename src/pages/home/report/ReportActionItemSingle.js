@@ -9,12 +9,11 @@ import styles from '../../../styles/styles';
 import CONST from '../../../CONST';
 import ReportActionItemDate from './ReportActionItemDate';
 import Avatar from '../../../components/Avatar';
-import personalDetailsPropType from '../../personalDetailsPropType';
 import compose from '../../../libs/compose';
 import withLocalize, {withLocalizePropTypes} from '../../../components/withLocalize';
 import Navigation from '../../../libs/Navigation/Navigation';
 import ROUTES from '../../../ROUTES';
-import {withPersonalDetails} from '../../../components/OnyxProvider';
+import withPersonalDetails, {personalDetailsPropTypes} from '../../../components/withPersonalDetails';
 import Tooltip from '../../../components/Tooltip';
 import ControlSelection from '../../../libs/ControlSelection';
 
@@ -22,8 +21,8 @@ const propTypes = {
     /** All the data of the action */
     action: PropTypes.shape(reportActionPropTypes).isRequired,
 
-    /** All of the personalDetails */
-    personalDetails: PropTypes.objectOf(personalDetailsPropType),
+    /** All of the personalDetails, including the current user */
+    personalDetails: PropTypes.objectOf(personalDetailsPropTypes),
 
     /** Styles for the outermost View */
     wrapperStyles: PropTypes.arrayOf(PropTypes.object),
@@ -112,5 +111,5 @@ ReportActionItemSingle.displayName = 'ReportActionItemSingle';
 
 export default compose(
     withLocalize,
-    withPersonalDetails(),
+    withPersonalDetails,
 )(ReportActionItemSingle);
