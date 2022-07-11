@@ -25,6 +25,7 @@ import Tooltip from '../../components/Tooltip';
 import CONST from '../../CONST';
 import KeyboardAvoidingView from '../../components/KeyboardAvoidingView';
 import * as PersonalDetails from '../../libs/actions/PersonalDetails';
+import withPersonalDetails, {personalDetailsPropTypes} from '../../components/withPersonalDetails';
 import ROUTES from '../../ROUTES';
 import networkPropTypes from '../../components/networkPropTypes';
 import {withNetwork} from '../../components/OnyxProvider';
@@ -64,16 +65,10 @@ const propTypes = {
     }).isRequired,
 
     /** Personal details of all the users */
-    personalDetails: PropTypes.shape({
-        /** Primary login of participant */
-        login: PropTypes.string,
+    personalDetails: PropTypes.objectOf(personalDetailsPropTypes).isRequired,
 
-        /** Display Name of participant */
-        displayName: PropTypes.string,
-
-        /** Avatar url of participant */
-        avatar: PropTypes.string,
-    }).isRequired,
+    /** Personal details of the current user */
+    currentUserPersonalDetails: personalDetailsPropTypes,
 
     ...withLocalizePropTypes,
 };
@@ -84,6 +79,9 @@ const defaultProps = {
         participants: [],
     },
     iouType: CONST.IOU.IOU_TYPE.REQUEST,
+    currentUserPersonalDetails: {
+        localCurrencyCode: CONST.CURRENCY.USD,
+    },
 };
 
 // Determines type of step to display within Modal, value provides the title for that page.
@@ -102,12 +100,6 @@ class IOUModal extends Component {
         this.createTransaction = this.createTransaction.bind(this);
         this.updateComment = this.updateComment.bind(this);
         this.sendMoney = this.sendMoney.bind(this);
-
-        // Get my details from the list of personal details and set my local currency to USD if not already set
-        this.myPersonalDetails = _.findWhere(props.personalDetails, {isCurrentUser: true});
-        if (!_.has(this.myPersonalDetails, 'localCurrencyCode') || _.isEmpty(this.myPersonalDetails.localCurrencyCode)) {
-            this.myPersonalDetails.localCurrencyCode = CONST.CURRENCY.USD;
-        }
 
         const participants = lodashGet(props, 'report.participants', []);
         const participantsWithDetails = _.map(OptionsListUtils.getPersonalDetailsForLogins(participants, props.personalDetails), personalDetails => ({
@@ -141,7 +133,7 @@ class IOUModal extends Component {
 
     componentDidMount() {
         this.fetchData();
-        IOU.setIOUSelectedCurrency(this.myPersonalDetails.localCurrencyCode);
+        IOU.setIOUSelectedCurrency(this.props.currentUserPersonalDetails.localCurrencyCode);
     }
 
     componentDidUpdate(prevProps) {
@@ -440,7 +432,7 @@ class IOUModal extends Component {
                                                 onConfirm={this.createTransaction}
                                                 onSendMoney={this.sendMoney}
                                                 hasMultipleParticipants={this.props.hasMultipleParticipants}
-                                                participants={_.filter(this.state.participants, email => this.myPersonalDetails.login !== email.login)}
+                                                participants={_.filter(this.state.participants, email => this.props.currentUserPersonalDetails.login !== email.login)}
                                                 iouAmount={this.state.amount}
                                                 comment={this.state.comment}
                                                 onUpdateComment={this.updateComment}
@@ -465,15 +457,13 @@ IOUModal.defaultProps = defaultProps;
 export default compose(
     withLocalize,
     withNetwork(),
+    withPersonalDetails,
     withOnyx({
         report: {
             key: ({route}) => `${ONYXKEYS.COLLECTION.REPORT}${lodashGet(route, 'params.reportID', '')}`,
         },
         iou: {
             key: ONYXKEYS.IOU,
-        },
-        personalDetails: {
-            key: ONYXKEYS.PERSONAL_DETAILS,
         },
     }),
 )(IOUModal);
