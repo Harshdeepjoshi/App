@@ -16,7 +16,7 @@ import SettlementButton from './SettlementButton';
 import ROUTES from '../ROUTES';
 import networkPropTypes from './networkPropTypes';
 import {withNetwork} from './OnyxProvider';
-import personalDetailsPropType from '../pages/personalDetailsPropType';
+import withPersonalDetails, {personalDetailsPropTypes} from './withPersonalDetails';
 
 const propTypes = {
     /** Callback to inform parent modal of success */
@@ -66,8 +66,8 @@ const propTypes = {
 
     /* Onyx Props */
 
-    /** Personal details of all the users, including current user */
-    personalDetails: PropTypes.objectOf(personalDetailsPropType),
+    /** Personal details of the current user */
+    currentUserPersonalDetails: personalDetailsPropTypes,
 
     /** Holds data related to IOU view state, rather than the underlying IOU data. */
     iou: PropTypes.shape({
@@ -94,7 +94,7 @@ const defaultProps = {
     },
     onUpdateComment: null,
     comment: '',
-    personalDetails: {},
+    currentUserPersonalDetails: {},
     iouType: CONST.IOU.IOU_TYPE.REQUEST,
 };
 
@@ -115,8 +115,6 @@ class IOUConfirmationList extends Component {
             }),
             value: props.hasMultipleParticipants ? CONST.IOU.IOU_TYPE.SPLIT : CONST.IOU.IOU_TYPE.REQUEST,
         }];
-
-        this.myPersonalDetails = _.findWhere(props.personalDetails, {isCurrentUser: true});
 
         this.state = {
             participants: formattedParticipants,
@@ -183,7 +181,7 @@ class IOUConfirmationList extends Component {
             const formattedParticipants = _.union(formattedSelectedParticipants, formattedUnselectedParticipants);
 
             const formattedMyPersonalDetails = OptionsListUtils.getIOUConfirmationOptionsFromMyPersonalDetail(
-                this.myPersonalDetails,
+                this.props.currentUserPersonalDetails,
                 this.props.numberFormat(this.calculateAmount(selectedParticipants, true) / 100, {
                     style: 'currency',
                     currency: this.props.iou.selectedCurrencyCode,
@@ -239,7 +237,7 @@ class IOUConfirmationList extends Component {
         }));
 
         splits.push({
-            email: OptionsListUtils.addSMSDomainIfPhoneNumber(this.myPersonalDetails.login),
+            email: OptionsListUtils.addSMSDomainIfPhoneNumber(this.props.currentUserPersonalDetails.login),
 
             // The user is default and we should send in cents to API
             // USD is temporary and there must be support for other currencies in the future
@@ -259,7 +257,7 @@ class IOUConfirmationList extends Component {
         const selectedParticipants = this.getSelectedParticipants();
         return [
             ...selectedParticipants,
-            OptionsListUtils.getIOUConfirmationOptionsFromMyPersonalDetail(this.myPersonalDetails),
+            OptionsListUtils.getIOUConfirmationOptionsFromMyPersonalDetail(this.props.currentUserPersonalDetails),
         ];
     }
 
@@ -389,11 +387,9 @@ export default compose(
     withLocalize,
     withWindowDimensions,
     withNetwork(),
+    withPersonalDetails,
     withOnyx({
         iou: {key: ONYXKEYS.IOU},
-        personalDetails: {
-            key: ONYXKEYS.PERSONAL_DETAILS,
-        },
         session: {
             key: ONYXKEYS.SESSION,
         },
