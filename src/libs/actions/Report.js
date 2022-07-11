@@ -52,7 +52,7 @@ Onyx.connect({
 let myPersonalDetails;
 Onyx.connect({
     key: ONYXKEYS.PERSONAL_DETAILS,
-    callback: val => myPersonalDetails = _.findWhere(val, {isCurrentUser: true}),
+    callback: val => myPersonalDetails = val[currentUserEmail],
 });
 
 const allReports = {};
@@ -959,11 +959,6 @@ function addComment(reportID, text, file) {
     if (DateUtils.canUpdateTimezone()) {
         const timezone = DateUtils.getCurrentTimezone();
         parameters.timezone = JSON.stringify(timezone);
-        optimisticData.push({
-            onyxMethod: CONST.ONYX.METHOD.MERGE,
-            key: ONYXKEYS.MY_PERSONAL_DETAILS,
-            value: {timezone},
-        });
         optimisticData.push({
             onyxMethod: CONST.ONYX.METHOD.MERGE,
             key: ONYXKEYS.PERSONAL_DETAILS,
