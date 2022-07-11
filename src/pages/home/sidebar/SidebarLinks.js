@@ -20,13 +20,13 @@ import * as OptionsListUtils from '../../../libs/OptionsListUtils';
 import KeyboardSpacer from '../../../components/KeyboardSpacer';
 import Tooltip from '../../../components/Tooltip';
 import CONST from '../../../CONST';
-import participantPropTypes from '../../../components/participantPropTypes';
 import themeColors from '../../../styles/themes/default';
 import withLocalize, {withLocalizePropTypes} from '../../../components/withLocalize';
 import * as App from '../../../libs/actions/App';
 import * as ReportUtils from '../../../libs/ReportUtils';
 import networkPropTypes from '../../../components/networkPropTypes';
 import {withNetwork} from '../../../components/OnyxProvider';
+import withPersonalDetails, {personalDetailsPropTypes} from '../../../components/withPersonalDetails';
 
 const propTypes = {
     /** Toggles the navigation menu open and closed */
@@ -55,7 +55,10 @@ const propTypes = {
     reportsWithDraft: PropTypes.objectOf(PropTypes.bool),
 
     /** List of users' personal details */
-    personalDetails: PropTypes.objectOf(participantPropTypes),
+    personalDetails: PropTypes.objectOf(personalDetailsPropTypes),
+
+    /** Personal details of the current user */
+    currentUserPersonalDetails: personalDetailsPropTypes,
 
     /** Information about the network */
     network: networkPropTypes.isRequired,
@@ -82,6 +85,7 @@ const defaultProps = {
     reports: {},
     reportsWithDraft: {},
     personalDetails: {},
+    currentUserPersonalDetails: {},
     currentlyViewedReportID: '',
     priorityMode: CONST.PRIORITY_MODE.DEFAULT,
     initialReportDataLoaded: false,
@@ -162,9 +166,8 @@ class SidebarLinks extends React.Component {
         super(props);
 
         // Get my details from the list of personal details and set default avatar if not already set
-        this.myPersonalDetails = _.findWhere(props.personalDetails, {isCurrentUser: true});
-        if (!_.has(this.myPersonalDetails, 'avatar') || _.isEmpty(this.myPersonalDetails.avatar)) {
-            this.myPersonalDetails.avatar = ReportUtils.getDefaultAvatar();
+        if (!_.has(this.props.currentUserPersonalDetails, 'avatar') || _.isEmpty(this.props.currentUserPersonalDetails.avatar)) {
+            this.props.currentUserPersonalDetails.avatar = ReportUtils.getDefaultAvatar();
         }
 
         this.state = {
@@ -282,7 +285,7 @@ class SidebarLinks extends React.Component {
                         onPress={this.props.onAvatarClick}
                     >
                         <AvatarWithIndicator
-                            source={this.myPersonalDetails.avatar}
+                            source={this.props.currentUserPersonalDetails.avatar}
                             isActive={this.props.network && !this.props.network.isOffline}
                             isSyncing={this.props.network && !this.props.network.isOffline && this.props.isSyncingData}
                             tooltipText={this.props.translate('common.settings')}
@@ -321,12 +324,10 @@ SidebarLinks.defaultProps = defaultProps;
 export default compose(
     withLocalize,
     withNetwork(),
+    withPersonalDetails,
     withOnyx({
         reports: {
             key: ONYXKEYS.COLLECTION.REPORT,
-        },
-        personalDetails: {
-            key: ONYXKEYS.PERSONAL_DETAILS,
         },
         currentlyViewedReportID: {
             key: ONYXKEYS.CURRENTLY_VIEWED_REPORTID,
