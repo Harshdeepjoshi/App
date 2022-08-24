@@ -136,6 +136,7 @@ class HeaderWithCloseButton extends Component {
                     styles.flexGrow1,
                     styles.justifyContentBetween,
                     styles.overflowHidden,
+                    styles.userSelectNone,
                 ]}
                 >
                     {this.props.shouldShowBackButton && (

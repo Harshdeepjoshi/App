@@ -1993,6 +1993,10 @@ const styles = {
         opacity: 0.5,
     },
 
+    userSelectNone: {
+        userSelect: 'none',
+    },
+
     unreadIndicatorText: {
         color: themeColors.unreadIndicator,
         fontFamily: fontFamily.GTA_BOLD,

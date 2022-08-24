@@ -276,7 +276,7 @@ const AvatarCropModal = (props) => {
                 title={props.translate('avatarCropModal.title')}
                 onCloseButtonPress={props.onClose}
             />
-            <Text style={[styles.mh5]}>{props.translate('avatarCropModal.description')}</Text>
+            <Text style={[styles.mh5, styles.userSelectNone]}>{props.translate('avatarCropModal.description')}</Text>
             <GestureHandlerRootView onLayout={initializeImageContainer} style={[styles.alignSelfStretch, styles.m5, styles.flex1, styles.alignItemsCenter]}>
 
                 {/* To avoid layout shift we should hide this component until the image container & image is initialized */}
