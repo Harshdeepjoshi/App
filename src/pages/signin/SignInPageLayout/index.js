@@ -86,7 +86,7 @@ const SignInPageLayout = (props) => {
                                         props.isLargeScreenWidth ? styles.ph25 : {}]}
                                     >
                                         <SignInPageHero />
-                                        <Footer scrollViewRef={scrollViewRef} />
+                                        <Footer scrollViewRef={scrollViewRef} clearLogin={props.clearLogin} />
                                     </View>
                                 </View>
                             </View>
@@ -94,9 +94,9 @@ const SignInPageLayout = (props) => {
                     </View>
                 ) : (
                     <ScrollView
-                        contentContainerStyle={scrollViewContentContainerStyles}
-                        keyboardShouldPersistTaps="handled"
-                        ref={scrollViewRef}
+                    contentContainerStyle={scrollViewContentContainerStyles}
+                    keyboardShouldPersistTaps="handled"
+                    ref={scrollViewRef}
                     >
                         <View style={[styles.flex1, styles.flexColumn, StyleUtils.getMinimumHeight(Math.max(variables.signInContentMinHeight, containerHeight))]}>
                             <SignInHeroBackgroundImageMobile
@@ -114,7 +114,7 @@ const SignInPageLayout = (props) => {
                             </SignInPageContent>
                         </View>
                         <View style={[styles.flex0]}>
-                            <Footer scrollViewRef={scrollViewRef} />
+                            <Footer scrollViewRef={scrollViewRef} clearLogin={()=>{props.clearLogin()}} />
                         </View>
                     </ScrollView>
                 )}

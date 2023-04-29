@@ -68,7 +68,7 @@ class LoginForm extends React.Component {
         super(props);
         this.onTextInput = this.onTextInput.bind(this);
         this.validateAndSubmitForm = this.validateAndSubmitForm.bind(this);
-
+        this.LoginFormRef = React.createRef();
         this.state = {
             formError: false,
             login: '',

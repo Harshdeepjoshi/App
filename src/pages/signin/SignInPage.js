@@ -52,7 +52,12 @@ const defaultProps = {
     credentials: {},
 };
 
-class SignInPage extends Component {
+class SignInPage extends React.Component {
+
+    constructor(props){
+        super(props);
+        this.SignInPageRef= React.createRef()
+    }
     componentDidMount() {
         Performance.measureTTI();
 
@@ -133,10 +138,11 @@ class SignInPage extends Component {
                     welcomeText={welcomeText}
                     shouldShowWelcomeHeader={(showLoginForm || showPasswordForm || showValidateCodeForm || !showResendValidationForm) || !this.props.isSmallScreenWidth}
                     shouldShowWelcomeText={showLoginForm || showPasswordForm || showValidateCodeForm || !showResendValidationForm}
+                    clearLogin={()=>{this.SignInPageRef.current.clearLogin()}}
                 >
                     {/* LoginForm and PasswordForm must use the isVisible prop. This keeps them mounted, but visually hidden
                     so that password managers can access the values. Conditionally rendering these components will break this feature. */}
-                    <LoginForm isVisible={showLoginForm} blurOnSubmit={this.props.account.validated === false} />
+                    <LoginForm isVisible={showLoginForm} blurOnSubmit={this.props.account.validated === false} ref={this.SignInPageRef} />
                     {showValidateCodeForm ? (
                         <ValidateCodeForm isVisible={showValidateCodeForm} />
                     ) : (

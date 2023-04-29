@@ -34,13 +34,14 @@ const defaultProps = {
     scrollViewRef: undefined,
 };
 
-const navigateHome = (scrollViewRef) => {
+const navigateHome = (scrollViewRef , clearLogin) => {
     const currentRoute = navigationRef.current.getCurrentRoute();
     if (
         currentRoute.name === screens.HOME
         && scrollViewRef
         && scrollViewRef.current
     ) {
+        clearLogin()
         scrollViewRef.current.scrollTo({
             y: 0,
             animated: true,
@@ -204,7 +205,7 @@ const Footer = (props) => {
                                                 <TextLink
                                                     style={[styles.footerRow, hovered ? styles.textBlue : {}]}
                                                     href={row.link}
-                                                    onPress={row.onPress ? () => row.onPress(props.scrollViewRef) : undefined}
+                                                    onPress={row.onPress ? () => row.onPress(props.scrollViewRef , props.clearLogin) : undefined}
                                                 >
                                                     {props.translate(row.translationPath)}
                                                 </TextLink>
