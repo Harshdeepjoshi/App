@@ -29,12 +29,11 @@ const defaultProps = {};
 
 const navigateHome = (scrollPageToTop) => {
     scrollPageToTop();
-
     // We need to clear sign in data in case the user is already in the ValidateCodeForm or PasswordForm pages
     Session.clearSignInData();
 };
 
-const columns = ({scrollPageToTop}) => [
+const columns = ({scrollPageToTop, clearLogin}) => [
     {
         translationPath: 'footer.features',
         rows: [
@@ -138,11 +137,17 @@ const columns = ({scrollPageToTop}) => [
         translationPath: 'footer.getStarted',
         rows: [
             {
-                onPress: () => navigateHome(scrollPageToTop),
+                onPress: () => {
+                    navigateHome(scrollPageToTop);
+                    clearLogin();
+                },
                 translationPath: 'footer.createAccount',
             },
             {
-                onPress: () => navigateHome(scrollPageToTop),
+                onPress: () => {
+                    navigateHome(scrollPageToTop);
+                    clearLogin();
+                },
                 translationPath: 'footer.logIn',
             },
         ],
@@ -168,7 +173,7 @@ const Footer = (props) => {
                 ) : null}
                 <View style={pageFooterWrapper}>
                     <View style={footerColumns}>
-                        {_.map(columns({scrollPageToTop: props.scrollPageToTop}), (column, i) => (
+                        {_.map(columns({scrollPageToTop: props.scrollPageToTop, clearLogin: props.clearLogin}), (column, i) => (
                             <View
                                 key={column.translationPath}
                                 style={footerColumn}

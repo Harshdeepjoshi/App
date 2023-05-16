@@ -99,7 +99,10 @@ const SignInPageLayout = (props) => {
                                     ]}
                                 >
                                     <SignInPageHero />
-                                    <Footer scrollPageToTop={scrollPageToTop} />
+                                    <Footer
+                                        scrollPageToTop={scrollPageToTop}
+                                        clearLogin={props.clearLogin}
+                                    />
                                 </View>
                             </View>
                         </View>
@@ -127,7 +130,10 @@ const SignInPageLayout = (props) => {
                         </SignInPageContent>
                     </View>
                     <View style={[styles.flex0]}>
-                        <Footer scrollPageToTop={scrollPageToTop} />
+                        <Footer
+                            scrollPageToTop={scrollPageToTop}
+                            clearLogin={props.clearLogin}
+                        />
                     </View>
                 </ScrollView>
             )}
